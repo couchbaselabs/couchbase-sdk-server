@@ -1,0 +1,47 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+      http:
+
+  hostmetrics:
+    scrapers:
+      load:
+      cpu:
+      disk:
+      filesystem:
+      memory:
+      network:
+      paging:
+      process:
+
+extensions:
+  health_check:
+  pprof:
+  zpages:
+
+processors:
+  batch:
+
+exporters:
+  logging:
+    loglevel: debug
+
+  prometheus:
+    endpoint: "0.0.0.0:10000"
+
+  otlp/tempo:
+    endpoint: tempo:4317
+    tls:
+      insecure: true
+
+service:
+  extensions: [health_check,pprof,zpages]
+  pipelines:
+
+    traces:
+      receivers: [otlp]
+      exporters: [otlp/tempo]
+    metrics:
+      receivers: [otlp]
+      exporters: [prometheus]
