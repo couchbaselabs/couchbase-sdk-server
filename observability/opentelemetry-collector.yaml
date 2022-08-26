@@ -27,6 +27,11 @@ exporters:
   logging:
     loglevel: debug
 
+  jaeger:
+    endpoint: jaeger:14250
+    tls:
+      insecure: true
+
   prometheus:
     endpoint: "0.0.0.0:10000"
 
@@ -35,13 +40,19 @@ exporters:
     tls:
       insecure: true
 
+  otlp/honeycomb_tracing:
+    endpoint: "api.honeycomb.io:443"
+    headers:
+      "x-honeycomb-team": "bQMef6WpRjOr46OL6SDTHM"
+      "x-honeycomb-dataset": "sdk.tracing"
+
 service:
   extensions: [health_check,pprof,zpages]
   pipelines:
 
     traces:
       receivers: [otlp]
-      exporters: [otlp/tempo]
+      exporters: [otlp/tempo,otlp/honeycomb_tracing,logging,jaeger]
     metrics:
       receivers: [otlp]
       exporters: [prometheus]

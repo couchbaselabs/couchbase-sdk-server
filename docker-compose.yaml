@@ -9,6 +9,18 @@ services:
     ports:
       - "4317:4317"   # otlp grpc
       - "10000:10000" # Prometheus metrics
+      - "1888:1888"   # pprof extension
+      - "13133:13133" # health_check extension
+      - "55679:55679" # zpages extension
+
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    # By default it stores all traces forever.  This limit should be fine for integration testing.
+    command: [ "--memory.max-traces=1000000" ]
+    ports:
+      - "6831:6831/udp"
+      - "16685:16685"  # grpc queries
+      - "16686:16686"  # ui
 
   tempo:
     image: grafana/tempo:latest
