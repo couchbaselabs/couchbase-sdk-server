@@ -2,7 +2,7 @@ receivers:
   otlp:
     protocols:
       grpc:
-      http:
+        endpoint: 0.0.0.0:10001
 
   hostmetrics:
     scrapers:
@@ -27,24 +27,14 @@ exporters:
   logging:
     loglevel: debug
 
-  jaeger:
-    endpoint: jaeger:14250
-    tls:
-      insecure: true
-
   prometheus:
-    endpoint: "0.0.0.0:10000"
-
-  otlp/tempo:
-    endpoint: tempo:4317
-    tls:
-      insecure: true
+    endpoint: "0.0.0.0:10002"
 
   otlp/honeycomb_tracing:
     endpoint: "api.honeycomb.io:443"
     headers:
       "x-honeycomb-team": "bQMef6WpRjOr46OL6SDTHM"
-      "x-honeycomb-dataset": "sdk.tracing"
+      "x-honeycomb-dataset": "sdk.performance"
 
 service:
   extensions: [health_check,pprof,zpages]
@@ -52,7 +42,9 @@ service:
 
     traces:
       receivers: [otlp]
-      exporters: [otlp/tempo,otlp/honeycomb_tracing,logging,jaeger]
+      processors: [batch]
+      exporters: [otlp/honeycomb_tracing]
     metrics:
       receivers: [otlp]
+      processors: [batch]
       exporters: [prometheus]

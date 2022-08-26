@@ -4,9 +4,17 @@ scrape_configs:
     scrape_interval: 1s
 
     static_configs:
-      - targets: ['otel:10000']
+      - targets: ['otel_integration_testing:10000']
         labels:
-          group: 'production'
+          group: 'integration_tesitng'
+
+      - targets: ['otel_performance_testing:10001']
+        labels:
+          group: 'performance_testing'
+
+      - targets: ['otel_adhoc_testing:10002']
+        labels:
+          group: 'adhoc_testing'
 
       - targets: ['otel:8888']
         labels:

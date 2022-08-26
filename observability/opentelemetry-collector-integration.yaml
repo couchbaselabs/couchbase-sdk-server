@@ -1,0 +1,52 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+      http:
+
+  hostmetrics:
+    scrapers:
+      load:
+      cpu:
+      disk:
+      filesystem:
+      memory:
+      network:
+      paging:
+      process:
+
+extensions:
+  health_check:
+  pprof:
+  zpages:
+
+processors:
+  batch:
+
+exporters:
+  logging:
+    loglevel: debug
+
+  jaeger:
+    endpoint: jaeger:14250
+    tls:
+      insecure: true
+
+  prometheus:
+    endpoint: "0.0.0.0:10000"
+
+  otlp/tempo:
+    endpoint: tempo:4317
+    tls:
+      insecure: true
+
+service:
+  extensions: [health_check,pprof,zpages]
+  pipelines:
+
+    traces:
+      receivers: [otlp]
+      exporters: [otlp/tempo,otlp/honeycomb_tracing,logging,jaeger]
+    metrics:
+      receivers: [otlp]
+      exporters: [prometheus]

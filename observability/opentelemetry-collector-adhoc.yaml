@@ -1,0 +1,50 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:10003
+
+  hostmetrics:
+    scrapers:
+      load:
+      cpu:
+      disk:
+      filesystem:
+      memory:
+      network:
+      paging:
+      process:
+
+extensions:
+  health_check:
+  pprof:
+  zpages:
+
+processors:
+  batch:
+
+exporters:
+  logging:
+    loglevel: debug
+
+  prometheus:
+    endpoint: "0.0.0.0:10004"
+
+  otlp/honeycomb_tracing:
+    endpoint: "api.honeycomb.io:443"
+    headers:
+      "x-honeycomb-team": "bQMef6WpRjOr46OL6SDTHM"
+      "x-honeycomb-dataset": "sdk.adhoc"
+
+service:
+  extensions: [health_check,pprof,zpages]
+  pipelines:
+
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlp/honeycomb_tracing]
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [prometheus]
