@@ -32,6 +32,7 @@ exporters:
     tls:
       insecure: true
 
+  # This is an endpoint exposed by the collector, for Prometheus to scrape
   prometheus:
     endpoint: "0.0.0.0:10000"
 

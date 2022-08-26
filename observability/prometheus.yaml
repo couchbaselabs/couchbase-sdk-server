@@ -8,11 +8,11 @@ scrape_configs:
         labels:
           group: 'integration_tesitng'
 
-      - targets: ['otel_performance_testing:10001']
+      - targets: ['otel_performance_testing:10002']
         labels:
           group: 'performance_testing'
 
-      - targets: ['otel_adhoc_testing:10002']
+      - targets: ['otel_adhoc_testing:10004']
         labels:
           group: 'adhoc_testing'
 

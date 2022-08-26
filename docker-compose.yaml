@@ -26,7 +26,7 @@ services:
     image: otel/opentelemetry-collector:latest
     command: [ "--config=/etc/otel-collector.yaml" ]
     volumes:
-      - ./observability/opentelemetry-collector-performance.yaml:/etc/otel-collector.yaml
+      - ./observability/opentelemetry-collector-adhoc.yaml:/etc/otel-collector.yaml
     ports:
       - "10003:10003"   # OTLP GRPC
       - "10004:10004"   # Prometheus metrics
