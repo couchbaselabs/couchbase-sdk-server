@@ -13,13 +13,17 @@ Used for FIT integration testing of SDK observability tracing and metrics output
 
 Consists of:
 
-* Jaeger.  The tracing database.  Can access the UI on http://performance.sdk.couchbase.com:16686.  The retention is 1m traces, which should be fine for integration testing. 
+* Jaeger.  The tracing database used for integration testing.  Can access the UI on http://performance.sdk.couchbase.com:16686.  The retention is 1m traces, which should be fine for integration testing. 
 * Prometheus.  The metrics database.  Can access the UI on http://performance.sdk.couchbase.com:9090.  Retention is 15 days.
-* OpenTelemetry collector.  This is the ingest point for integration testing, running on port 4317. 
-The performers are told to send their data here, and it forwards it on to Prometheus, Jaeger and (for now) Grafana Tempo.
-IMPORTANT: Do not send anything else to this port - e.g. don't use it for performance or adhoc testing.
+* Honeycomb.  The tracing database used for adhoc and performance testing.  Can join with this link https://ui.honeycomb.io/join_team/couchbase-sdk.
+
+There are three `opentelemetry-collector` instances ready for ingesting OTLP GRPC data:
+
+* Port 4317 for adhoc testing.  Forwards to Prometheus and Honeycomb.  SDK team members should feel free to use this for any adhoc needs.  Though do bear in mind that our free plan for Honeycomb is very rate limited..
+* Port 10001 for performance testing (http://performance.sdk.couchbase.com:8080/).  Forwards to Prometheus and Honeycomb.
+* Port 10003 for integration testing.  Forwards to Jaeger, Prometheus and Honeycomb (and, for now, Grafana Tempo).
+Important: Do not send anything else to this port - e.g. don't use it for performance or adhoc testing.
 We don't want to interfere with the tests.
-* Grafana, with UI running on http://performance.sdk.couchbase.com:3000.  Just to allow easier viewing and debugging of the telemetry.
 
 And deprecated/legacy (may be removed in future):
 
