@@ -43,7 +43,7 @@ service:
     traces:
       receivers: [otlp]
       processors: [batch]
-      exporters: [otlp/honeycomb_tracing]
+      exporters: [otlp/honeycomb_tracing,logging]
     metrics:
       receivers: [otlp]
       processors: [batch]

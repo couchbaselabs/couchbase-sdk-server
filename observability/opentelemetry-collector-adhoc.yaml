@@ -2,7 +2,6 @@ receivers:
   otlp:
     protocols:
       grpc:
-        endpoint: 0.0.0.0:10003
 
   hostmetrics:
     scrapers:

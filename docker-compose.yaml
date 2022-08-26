@@ -7,7 +7,7 @@ services:
     volumes:
       - ./observability/opentelemetry-collector-integration.yaml:/etc/otel-collector.yaml
     ports:
-      - "4317:4317"   # OTLP GRPC
+      - "10003:10003"   # OTLP GRPC
       - "10000:10000" # Prometheus metrics
 
   otel_performance_testing:
@@ -28,7 +28,7 @@ services:
     volumes:
       - ./observability/opentelemetry-collector-adhoc.yaml:/etc/otel-collector.yaml
     ports:
-      - "10003:10003"   # OTLP GRPC
+      - "4317:4317"   # OTLP GRPC
       - "10004:10004"   # Prometheus metrics
 
   jaeger:

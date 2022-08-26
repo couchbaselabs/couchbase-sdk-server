@@ -2,7 +2,7 @@ receivers:
   otlp:
     protocols:
       grpc:
-      http:
+        endpoint: 0.0.0.0:10003
 
   hostmetrics:
     scrapers:
@@ -36,6 +36,12 @@ exporters:
   prometheus:
     endpoint: "0.0.0.0:10000"
 
+  otlp/honeycomb:
+    endpoint: "api.honeycomb.io:443"
+    headers:
+      "x-honeycomb-team": "bQMef6WpRjOr46OL6SDTHM"
+      "x-honeycomb-dataset": "sdk.integration"
+
   otlp/tempo:
     endpoint: tempo:4317
     tls:
@@ -47,7 +53,7 @@ service:
 
     traces:
       receivers: [otlp]
-      exporters: [otlp/tempo,otlp/honeycomb_tracing,logging,jaeger]
+      exporters: [otlp/tempo,otlp/honeycomb,logging,jaeger]
     metrics:
       receivers: [otlp]
       exporters: [prometheus]
