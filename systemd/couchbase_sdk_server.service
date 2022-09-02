@@ -1,0 +1,20 @@
+[Unit]
+Description=Couchbase SDK Server
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=simple
+User=ec2-user
+WorkingDirectory=/home/ec2-user/couchbase-sdk-server
+Restart=on-abort
+WorkingDirectory=$(pwd)
+# Shutdown container (if running) when unit is started
+ExecStartPre=$(which docker-compose) -f docker-compose.yml down
+# Start container when unit is started
+ExecStart=$(which docker-compose) -f docker-compose.yml up --remove-orphans
+# Stop container when unit is stopped
+ExecStop=$(which docker-compose) -f docker-compose.yml down
+
+[Install]
+WantedBy=multi-user.target

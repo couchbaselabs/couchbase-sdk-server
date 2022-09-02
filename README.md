@@ -8,6 +8,12 @@ Clone this then:
 docker-compose up -d --remove-orphans
 ```
 
+On production (performance.sdk.couchbase.com), it's setup with run automatically with systemd using the scripts under `systemd` directory:
+
+```
+sudo systemctl start couchbase_sdk_server
+```
+
 # Observability Stack
 Used for FIT integration testing of SDK observability tracing and metrics output.
 
@@ -29,3 +35,22 @@ And deprecated/legacy (may be removed in future):
 
 * Grafana Tempo.  The tracing database.  Can access the UI on http://performance.sdk.couchbase.com:.  Retention is 14 days.
   * The search capabilities just don't work reliably enough for integration testing.  Replaced with Jaeger.
+
+
+# Performance
+Production is setup to automatically regularly pull and use any pushed changes to the repositories, as can be seen with:
+
+```
+ssh -i ~/keys/sdk-performance.pem ec2-user@performance.sdk.couchbase.com
+crontab -l
+crontab -e
+less /var/spool/mail/ec2-user
+```
+
+The backend and frontend are also setup to run automatically with systemd via the scripts in `systemd`.
+
+```
+sudo systemctl daemon-reload
+sudo systemctl start perf_vue
+sudo systemctl start perf_nest
+```

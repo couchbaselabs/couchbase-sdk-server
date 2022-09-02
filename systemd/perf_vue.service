@@ -1,0 +1,13 @@
+[Unit]
+Description=SDK Performance Vue
+After=network.target
+
+[Service]
+Type=simple
+User=ec2-user
+WorkingDirectory=/home/ec2-user/perf-sdk-frontend/vue
+ExecStart=/usr/bin/npm run serve
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target

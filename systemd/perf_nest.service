@@ -1,0 +1,13 @@
+[Unit]
+Description=SDK Performance Nest
+After=network.target
+
+[Service]
+Type=simple
+User=ec2-user
+WorkingDirectory=/home/ec2-user/perf-sdk-frontend/nest
+ExecStart=/usr/bin/npm run start:dev
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target
