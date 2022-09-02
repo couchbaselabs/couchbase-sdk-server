@@ -36,6 +36,9 @@ And deprecated/legacy/commented-out:
 * Grafana Tempo.  The tracing database.  Can access the UI on http://performance.sdk.couchbase.com:.  Retention is 14 days.
   * The search capabilities just don't work reliably enough for integration testing.  Replaced with Jaeger.
 
+## Debugging dropped packages
+
+http://13.57.94.142:10006/metrics
 
 # Performance
 Production is setup to automatically regularly pull and use any pushed changes to the repositories, as can be seen with:
