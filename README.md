@@ -31,7 +31,7 @@ There are three `opentelemetry-collector` instances ready for ingesting OTLP GRP
 Important: Do not send anything else to this port - e.g. don't use it for performance or adhoc testing.
 We don't want to interfere with the tests.
 
-And deprecated/legacy (may be removed in future):
+And deprecated/legacy/commented-out:
 
 * Grafana Tempo.  The tracing database.  Can access the UI on http://performance.sdk.couchbase.com:.  Retention is 14 days.
   * The search capabilities just don't work reliably enough for integration testing.  Replaced with Jaeger.
