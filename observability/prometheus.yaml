@@ -6,7 +6,7 @@ scrape_configs:
     static_configs:
       - targets: ['otel_integration_testing:10000']
         labels:
-          group: 'integration_tesitng'
+          group: 'integration_testing'
 
       - targets: ['otel_performance_testing:10002']
         labels:
@@ -15,6 +15,10 @@ scrape_configs:
       - targets: ['otel_adhoc_testing:10004']
         labels:
           group: 'adhoc_testing'
+
+      - targets: ['otel:8888']
+        labels:
+          group: 'otel-collector-itself'
 
       - targets: ['otel:8888']
         labels:
