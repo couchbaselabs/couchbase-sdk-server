@@ -16,10 +16,14 @@ scrape_configs:
         labels:
           group: 'adhoc_testing'
 
-      - targets: ['otel:8888']
+      - targets: ['otel:10005']
         labels:
-          group: 'otel-collector-itself'
+          group: 'otel-collector-itself-performance'
 
-      - targets: ['otel:8888']
+      - targets: ['otel:10006']
         labels:
-          group: 'otel-collector-itself'
+          group: 'otel-collector-itself-integration'
+
+      - targets: ['otel:10007']
+        labels:
+          group: 'otel-collector-itself-adhoc'

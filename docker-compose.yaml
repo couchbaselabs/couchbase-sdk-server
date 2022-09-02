@@ -8,7 +8,8 @@ services:
       - ./observability/opentelemetry-collector-integration.yaml:/etc/otel-collector.yaml
     ports:
       - "10003:10003"   # OTLP GRPC
-      - "10000:10000" # Prometheus metrics
+      - "10000:10000"   # Prometheus metrics (of what's sent to opentelemetry-collector)
+      - "10006:8888"    # Prometheus metrics (of opentelemetry-collector's own metrics)
 
   otel_performance_testing:
     image: otel/opentelemetry-collector:latest
@@ -17,7 +18,8 @@ services:
       - ./observability/opentelemetry-collector-performance.yaml:/etc/otel-collector.yaml
     ports:
       - "10001:10001"   # OTLP GRPC
-      - "10002:10002"   # Prometheus metrics
+      - "10002:10002"   # Prometheus metrics (of what's sent to opentelemetry-collector)
+      - "10005:8888"    # Prometheus metrics (of opentelemetry-collector's own metrics)
       - "1888:1888"     # pprof extension
       - "13133:13133"   # health_check extension
       - "55679:55679"   # zpages extension
@@ -28,8 +30,9 @@ services:
     volumes:
       - ./observability/opentelemetry-collector-adhoc.yaml:/etc/otel-collector.yaml
     ports:
-      - "4317:4317"   # OTLP GRPC
-      - "10004:10004"   # Prometheus metrics
+      - "4317:4317"     # OTLP GRPC
+      - "10004:10004"   # Prometheus metrics (of what's sent to opentelemetry-collector)
+      - "10007:8888"    # Prometheus metrics (of opentelemetry-collector's own metrics)
 
   jaeger:
     image: jaegertracing/all-in-one:latest

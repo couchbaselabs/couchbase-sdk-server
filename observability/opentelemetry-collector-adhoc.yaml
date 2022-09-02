@@ -37,8 +37,13 @@ exporters:
 
 service:
   extensions: [health_check,pprof,zpages]
-  pipelines:
 
+  # Expose opentelemetry-collector's own metrics on this port
+  telemetry:
+    metrics:
+      address: ":8888"
+
+  pipelines:
     traces:
       receivers: [otlp]
       processors: [batch]
