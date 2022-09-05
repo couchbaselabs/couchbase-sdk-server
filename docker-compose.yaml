@@ -89,9 +89,6 @@ services:
       - POSTGRES_PASSWORD
     ports:
       - "5432:5432"
-
-
-networks:
-  # The observability stack doesn't care what network it runs on, the performance stack expects 'perf'
-  default:
-    driver: perf
+    # The observability stack doesn't care what network it runs on, the performance stack expects 'perf'
+    networks:
+      - perf
