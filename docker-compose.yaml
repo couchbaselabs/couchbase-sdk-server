@@ -1,6 +1,8 @@
 version: "3"
 services:
 
+  # Observability stack
+
   otel_integration_testing:
     image: otel/opentelemetry-collector:latest
     command: [ "--config=/etc/otel-collector.yaml" ]
@@ -75,3 +77,21 @@ services:
 #      - GF_AUTH_DISABLE_LOGIN_FORM=true
 #    ports:
 #      - "3000:3000"
+
+
+  # Performance stack
+
+  timedb:
+    image: timescale/timescaledb:latest-pg14
+    volumes:
+      - /home/ec2-user/perf-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD
+    ports:
+      - "5432:5432"
+
+
+networks:
+  # The observability stack doesn't care what network it runs on, the performance stack expects 'perf'
+  default:
+    driver: perf

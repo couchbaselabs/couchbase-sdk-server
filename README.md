@@ -3,7 +3,11 @@ Allows rebuilding the SDK server.
 Should probably be in Salt/Ansible/Puppet/Chef instead but I don't know any of those, so here we are.
 
 # Running
-Clone this then:
+Clone this, change to the directory, edit the `.env` file to set all required fields.
+
+(You'll need to get the password from someone, the same one other accessors of the database are depending on.) 
+
+Then:
 ```
 docker-compose up -d --remove-orphans
 ```
@@ -33,14 +37,18 @@ We don't want to interfere with the tests.
 
 And deprecated/legacy/commented-out:
 
-* Grafana Tempo.  The tracing database.  Can access the UI on http://performance.sdk.couchbase.com:.  Retention is 14 days.
+* Grafana Tempo.  The tracing database.
   * The search capabilities just don't work reliably enough for integration testing.  Replaced with Jaeger.
 
-## Debugging dropped packages
-
-http://13.57.94.142:10006/metrics
+## Debugging missing telemetry
+Check if opentelemetry-collector saw it: http://performance.sdk.couchbase.com:10006/metrics (replace that port correct port from prometheus.yaml) 
 
 # Performance
+The database is started with the docker-compose.  If it needs to be done manually for some reason then: 
+```
+sudo docker run -p 5432:5432 -v /home/ec2-user/perf-data:/var/lib/postgresql/data -e POSTGRES_PASSWORD=<PROD_PASSWORD> --name timedb timescale/timescaledb:latest-pg14
+```
+
 Production is setup to automatically regularly pull and use any pushed changes to the repositories, as can be seen with:
 
 ```
