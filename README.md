@@ -3,7 +3,10 @@ Allows rebuilding the SDK server.
 Should probably be in Salt/Ansible/Puppet/Chef instead but I don't know any of those, so here we are.
 
 # Running
-Clone this, change to the directory, edit the `.env` file to set all required fields.
+Clone this, change to the directory, create a `.env` file:
+```
+POSTGRES_PASSWORD=<must be provided>
+```
 
 (You'll need to get the password from someone, the same one other accessors of the database are depending on.) 
 
