@@ -82,6 +82,7 @@ services:
   # Performance stack
 
   timedb:
+    container_name: timedb
     image: timescale/timescaledb:latest-pg14
     volumes:
       - /home/ec2-user/perf-data:/var/lib/postgresql/data
@@ -92,3 +93,6 @@ services:
     # The observability stack doesn't care what network it runs on, the performance stack expects 'perf'
     networks:
       - perf
+
+networks:
+  perf:
