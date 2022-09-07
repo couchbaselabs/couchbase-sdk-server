@@ -52,6 +52,8 @@ The database is started with the docker-compose.  If it needs to be done manuall
 sudo docker run -p 5432:5432 -v /home/ec2-user/perf-data:/var/lib/postgresql/data -e POSTGRES_PASSWORD=<PROD_PASSWORD> --name timedb timescale/timescaledb:latest-pg14
 ```
 
+Follow instructions under transactions-fit-performer/perf-driver for one-off database setup.
+
 Production is setup to automatically regularly pull and use any pushed changes to the repositories, as can be seen with:
 
 ```

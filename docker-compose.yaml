@@ -38,8 +38,9 @@ services:
 
   jaeger:
     image: jaegertracing/all-in-one:latest
-    # By default it stores all traces forever.  This limit should be fine for integration testing.
-    command: [ "--memory.max-traces=100000" ]
+    # By default it stores all traces forever.  This limit should be fine for integration testing.  Traces eat limited
+    # memory quickly.
+    command: [ "--memory.max-traces=100" ]
     ports:
       - "6831:6831/udp"
       - "16685:16685"  # grpc queries
