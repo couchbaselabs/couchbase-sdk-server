@@ -42,7 +42,7 @@ services:
     # crashed.  Trying out Badger, a local storage backend, instead.  Traces are deleted after 72 hours by default.
     environment:
       SPAN_STORAGE_TYPE: badger
-      BADGER_EPHEMERAL: false
+      BADGER_EPHEMERAL: "false"
       BADGER_DIRECTORY_VALUE: /badger/data
       BADGER_DIRECTORY_KEY: badger/key
     volumes:
