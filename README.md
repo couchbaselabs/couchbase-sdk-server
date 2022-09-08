@@ -44,7 +44,7 @@ And deprecated/legacy/commented-out:
   * The search capabilities just don't work reliably enough for integration testing.  Replaced with Jaeger.
 
 ## Debugging missing telemetry
-Check if opentelemetry-collector saw it: http://performance.sdk.couchbase.com:10006/metrics (replace that port correct port from prometheus.yaml) 
+Check if opentelemetry-collector saw it: http://performance.sdk.couchbase.com:10006/metrics (that's the integration test collector - if looking for performance or adhoc data, replace that port with the correct one from prometheus.yaml) 
 
 # Performance
 The database is started with the docker-compose.  If it needs to be done manually for some reason then: 

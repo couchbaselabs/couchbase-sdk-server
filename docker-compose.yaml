@@ -38,9 +38,15 @@ services:
 
   jaeger:
     image: jaegertracing/all-in-one:latest
-    # By default it stores all traces forever.  This limit should be fine for integration testing.  Traces eat limited
-    # memory quickly.
-    command: [ "--memory.max-traces=100" ]
+    # Jaeger defaults to in-memory, and even with maximum traces set to 100, memory rapidly ballooned until the server
+    # crashed.  Trying out Badger, a local storage backend, instead.  Traces are deleted after 72 hours by default.
+    environment:
+      SPAN_STORAGE_TYPE: badger
+      BADGER_EPHEMERAL: false
+      BADGER_DIRECTORY_VALUE: /badger/data
+      BADGER_DIRECTORY_KEY: badger/key
+    volumes:
+      - /home/ec2-user/jaeger-data-badger:/badger
     ports:
       - "6831:6831/udp"
       - "16685:16685"  # grpc queries
