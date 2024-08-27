@@ -2,6 +2,9 @@ receivers:
   otlp:
     protocols:
       grpc:
+        tls:
+          cert_file: "/etc/ssl/certs/ca.crt"
+          key_file: "/etc/ssl/certs/ca.key"
 
   hostmetrics:
     scrapers:

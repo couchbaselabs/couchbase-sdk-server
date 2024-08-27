@@ -1,23 +1,32 @@
-version: "3"
+version: "3.0"
 services:
 
   # Observability stack
-
   otel_integration_testing:
+    container_name: otel_integration_testing
+    user: "1000:1000"
     image: otel/opentelemetry-collector:latest
     command: [ "--config=/etc/otel-collector.yaml" ]
     volumes:
       - ./observability/opentelemetry-collector-integration.yaml:/etc/otel-collector.yaml
+      - /etc/nginx/ca.crt:/etc/ssl/certs/ca.crt
+      - /etc/nginx/ca.key:/etc/ssl/certs/ca.key
     ports:
       - "10003:10003"   # OTLP GRPC
       - "10000:10000"   # Prometheus metrics (of what's sent to opentelemetry-collector)
       - "10006:8888"    # Prometheus metrics (of opentelemetry-collector's own metrics)
+    networks:
+      - perf
 
   otel_performance_testing:
+    container_name: otel_performance_testing
+    user: "1000:1000"
     image: otel/opentelemetry-collector:latest
     command: [ "--config=/etc/otel-collector.yaml" ]
     volumes:
       - ./observability/opentelemetry-collector-performance.yaml:/etc/otel-collector.yaml
+      - /etc/nginx/ca.crt:/etc/ssl/certs/ca.crt
+      - /etc/nginx/ca.key:/etc/ssl/certs/ca.key
     ports:
       - "10001:10001"   # OTLP GRPC
       - "10002:10002"   # Prometheus metrics (of what's sent to opentelemetry-collector)
@@ -25,18 +34,28 @@ services:
       - "1888:1888"     # pprof extension
       - "13133:13133"   # health_check extension
       - "55679:55679"   # zpages extension
+    networks:
+      - perf
 
   otel_adhoc_testing:
+    container_name: otel_adhoc_testing
+    user: "1000:1000"
     image: otel/opentelemetry-collector:latest
     command: [ "--config=/etc/otel-collector.yaml" ]
     volumes:
       - ./observability/opentelemetry-collector-adhoc.yaml:/etc/otel-collector.yaml
+      - /etc/nginx/ca.crt:/etc/ssl/certs/ca.crt
+      - /etc/nginx/ca.key:/etc/ssl/certs/ca.key
     ports:
       - "4317:4317"     # OTLP GRPC
       - "10004:10004"   # Prometheus metrics (of what's sent to opentelemetry-collector)
       - "10007:8888"    # Prometheus metrics (of opentelemetry-collector's own metrics)
+    networks:
+      - perf
 
   jaeger:
+    container_name: jaeger
+    user: "1000:1000"
     image: jaegertracing/all-in-one:latest
     # Jaeger defaults to in-memory, and even with maximum traces set to 100, memory rapidly ballooned until the server
     # crashed.  Trying out Badger, a local storage backend, instead.  Traces are deleted after 72 hours by default.
@@ -45,49 +64,33 @@ services:
       BADGER_EPHEMERAL: "false"
       BADGER_DIRECTORY_VALUE: /badger/data
       BADGER_DIRECTORY_KEY: badger/key
+      #QUERY_BASE_PATH: /jaeger
+    command:
+     - '--query.base-path=/jaeger'
     volumes:
       - /home/ec2-user/jaeger-data-badger:/badger
     ports:
       - "6831:6831/udp"
       - "16685:16685"  # grpc queries
-      - "16686:16686"  # ui
-
-#  tempo:
-#    image: grafana/tempo:latest
-#    command: [ "-config.file=/etc/tempo.yaml" ]
-#    volumes:
-#      - ./observability/tempo-local.yaml:/etc/tempo.yaml
-#      - ./observability/tempo-data:/tmp/tempo
-#    ports:
-#      - "3200:3200"   # tempo
-#    expose:
-#      - "14268"  # jaeger ingest
-#      - "4317"  # otlp grpc
-#      - "4318"  # otlp http
-#      - "9411"   # zipkin
+#      - "16686:16686"  # ui
+    networks:
+      - perf
 
   prometheus:
+    container_name: prometheus
     image: prom/prometheus:latest
-    command: [ "--config.file=/etc/prometheus.yaml" ]
     volumes:
       - ./observability/prometheus.yaml:/etc/prometheus.yaml
+    command:
+     - '--web.external-url=/prometheus/'
+     - '--web.route-prefix=/'
+     - '--config.file=/etc/prometheus.yaml'
     ports:
       - "9090:9090"
-
-#  grafana:
-#    image: grafana/grafana:latest
-#    volumes:
-#      - ./observability/grafana-datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
-#    environment:
-#      - GF_AUTH_ANONYMOUS_ENABLED=true
-#      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
-#      - GF_AUTH_DISABLE_LOGIN_FORM=true
-#    ports:
-#      - "3000:3000"
-
+    networks:
+      - perf
 
   # Performance stack
-
   timedb:
     container_name: timedb
     image: timescale/timescaledb:latest-pg14
@@ -97,7 +100,53 @@ services:
       - POSTGRES_PASSWORD
     ports:
       - "5432:5432"
-    # The observability stack doesn't care what network it runs on, the performance stack expects 'perf'
+    networks:
+      - perf
+
+  # Logging stack
+  loki:
+    image: grafana/loki:latest
+    user: "1000:1000"
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    volumes:
+      - ./logging/loki-local-config.yaml:/etc/loki/local-config.yaml
+      - /data/logs:/logs
+    networks:
+      - perf
+
+  grafana:
+    image: grafana/grafana:latest
+    user: "1000:1000"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./logging/grafana.ini:/etc/grafana/grafana.ini
+      - /data/logs/grafana/data:/var/lib/grafana 
+    depends_on:
+      - loki
+    networks:
+      - perf
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD}
+    # Workaround https://github.com/grafana/grafana/issues/49055
+    command:
+      - "sh"
+      - "-c"
+      - "grafana cli admin reset-admin-password ${GF_SECURITY_ADMIN_PASSWORD} && /run.sh"#    healthcheck:
+
+  nginx:
+    image: nginx:latest
+    restart: unless-stopped
+    volumes:
+      - ./logging/nginx.conf:/etc/nginx/nginx.conf
+      - /etc/nginx/ca.crt:/etc/ssl/certs/ca.crt
+      - /etc/nginx/ca.key:/etc/ssl/certs/ca.key
+    ports:
+      - "443:443"
+      - "16686:16686"
     networks:
       - perf
 
