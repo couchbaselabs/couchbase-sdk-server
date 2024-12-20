@@ -72,7 +72,7 @@ services:
     ports:
       - "6831:6831/udp"
       - "16685:16685"  # grpc queries
-#      - "16686:16686"  # ui
+      - "16686:16686"  # ui
     networks:
       - perf
 
@@ -93,9 +93,9 @@ services:
   # Performance stack
   timedb:
     container_name: timedb
-    image: timescale/timescaledb:latest-pg14
+    image: timescale/timescaledb-ha:pg14-latest
     volumes:
-      - /home/ec2-user/perf-data:/var/lib/postgresql/data
+      - /home/ec2-user/perf-data:/home/postgres/pgdata/data
     environment:
       - POSTGRES_PASSWORD
     ports:
