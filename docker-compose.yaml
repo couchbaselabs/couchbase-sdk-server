@@ -5,8 +5,7 @@ services:
   otel_integration_testing:
     container_name: otel_integration_testing
     user: "1000:1000"
-    # Using older version as some extensions we use in the config have been removed in newer - needs patching properly
-    image: otel/opentelemetry-collector-contrib:0.81.0
+    image: otel/opentelemetry-collector-contrib:0.131.0
     command: [ "--config=/etc/otel-collector.yaml" ]
     volumes:
       - ./observability/opentelemetry-collector-integration.yaml:/etc/otel-collector.yaml
@@ -22,7 +21,7 @@ services:
   otel_performance_testing:
     container_name: otel_performance_testing
     user: "1000:1000"
-    image: otel/opentelemetry-collector-contrib:0.81.0
+    image: otel/opentelemetry-collector-contrib:0.131.0
     command: [ "--config=/etc/otel-collector.yaml" ]
     volumes:
       - ./observability/opentelemetry-collector-performance.yaml:/etc/otel-collector.yaml
@@ -41,7 +40,7 @@ services:
   otel_adhoc_testing:
     container_name: otel_adhoc_testing
     user: "1000:1000"
-    image: otel/opentelemetry-collector-contrib:0.81.0
+    image: otel/opentelemetry-collector-contrib:0.131.0
     command: [ "--config=/etc/otel-collector.yaml" ]
     volumes:
       - ./observability/opentelemetry-collector-adhoc.yaml:/etc/otel-collector.yaml
