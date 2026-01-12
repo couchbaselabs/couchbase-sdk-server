@@ -10,9 +10,19 @@ POSTGRES_PASSWORD=<must be provided>
 
 (You'll need to get the password from someone, the same one other accessors of the database are depending on.) 
 
+Create the following directories and give owndership to user 1000 (used by all services):
+
+```
+mkdir /home/ubuntu/jaeger-data-badger/{data,key}
+sudo chown -R 1000:1000 /home/ubuntu/jaeger-data-badger
+```
+
+> [!IMPORTANT]
+> The `docker-compose.yaml` contains certain volume mounts that assume the user is `ubuntu` (i.e. `/home/ubuntu/myFile...`). Make sure to change it if your user is different.
+
 Then:
 ```
-docker-compose up -d --remove-orphans
+docker compose up -d --remove-orphans
 ```
 
 On production (performance-sdk.couchbase.com), it's setup with run automatically with systemd using the scripts under `systemd` directory:
