@@ -63,7 +63,7 @@ services:
       SPAN_STORAGE_TYPE: badger
       BADGER_EPHEMERAL: "false"
       BADGER_DIRECTORY_VALUE: /badger/data
-      BADGER_DIRECTORY_KEY: badger/key
+      BADGER_DIRECTORY_KEY: /badger/key
       #QUERY_BASE_PATH: /jaeger
       QUERY_TLS_ENABLED: "true"
       QUERY_TLS_CERT: "/etc/ssl/certs/ca.crt"
@@ -74,7 +74,7 @@ services:
      - '--query.http.tls.cert=/etc/ssl/certs/ca.crt'
      - '--query.http.tls.key=/etc/ssl/certs/ca.key'
     volumes:
-      - /home/ec2-user/jaeger-data-badger:/badger
+      - /home/ubuntu/jaeger-data-badger:/badger
       - /etc/nginx/ca.crt:/etc/ssl/certs/ca.crt
       - /etc/nginx/ca.key:/etc/ssl/certs/ca.key
     ports:
@@ -101,9 +101,9 @@ services:
   # Performance stack
   timedb:
     container_name: timedb
-    image: timescale/timescaledb-ha:pg14-latest
+    image: timescale/timescaledb:latest-pg17
     volumes:
-      - /home/ec2-user/perf-data:/home/postgres/pgdata/data
+      - /home/ubuntu/perf-data:/home/postgres/pgdata/data
     environment:
       - POSTGRES_PASSWORD
     ports:
