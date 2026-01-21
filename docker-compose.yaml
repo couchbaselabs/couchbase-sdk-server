@@ -102,7 +102,7 @@ services:
     container_name: timedb
     image: timescale/timescaledb:latest-pg17
     volumes:
-      - /home/ubuntu/perf-data:/home/postgres/pgdata/data
+      - /home/ubuntu/perf-data:/var/lib/postgresql/data
     environment:
       - POSTGRES_PASSWORD
     ports:
